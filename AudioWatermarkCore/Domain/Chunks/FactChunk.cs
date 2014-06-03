@@ -8,11 +8,22 @@ namespace AudioWatermarkCore.Domain.Chunks
 {
     public class FactChunk
     {
-        private string chunkID;
+        private uint chunkID;
         private uint chunkSize;
         private uint numSamples;
 
-        public string ChunkID
+        public FactChunk()
+        {
+        }
+
+        public FactChunk(FactChunk fact)
+        {
+            chunkID = fact.ChunkID;
+            chunkSize = fact.ChunkSize;
+            numSamples = fact.NumSamples;
+        }
+
+        public uint ChunkID
         {
             get { return chunkID; }
             set { chunkID = value; }

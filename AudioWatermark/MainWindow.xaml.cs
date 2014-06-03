@@ -1,6 +1,9 @@
 ﻿using AudioWatermarkCore;
+using AudioWatermarkCore.Domain;
+using AudioWatermarkLSB;
 using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +25,9 @@ namespace AudioWatermark
     /// </summary>
     public partial class MainWindow : Window
     {
+        private WAVFile originalFile;
+        private WAVFile encodedFile;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -33,7 +39,37 @@ namespace AudioWatermark
             ofd.ShowDialog();
             
             WAVReader reader = new WAVReader();
-            reader.ReadFile(ofd.FileName);
+            originalFile = reader.ReadFile(ofd.FileName);
+
+            MessageBox.Show("Plik wczytany");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (originalFile == null)
+            {
+                MessageBox.Show("Wczytaj plik");
+                return;
+            }
+
+            if (tbxMessage.Text.Count() < 3)
+            {
+                MessageBox.Show("Wpisz wiadomość");
+                return;
+            }
+
+            encodedFile = new LSBCoder().WriteMessageToFile(originalFile, tbxMessage.Text);
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.ShowDialog();
+
+            WAVReader reader = new WAVReader();
+            string filename = sfd.SafeFileName;
+            reader.SaveFile(encodedFile, filename);
         }
     }
 }

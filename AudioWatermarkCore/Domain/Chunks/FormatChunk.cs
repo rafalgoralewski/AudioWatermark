@@ -8,7 +8,7 @@ namespace AudioWatermarkCore.Domain.Chunks
 {
     public class FormatChunk
     {
-        private string chunkId;
+        private uint chunkId;
         private uint chunkSize;
         private ushort formatTag;
         private ushort channels;
@@ -17,7 +17,23 @@ namespace AudioWatermarkCore.Domain.Chunks
         private ushort blockAlign;
         private uint bitsPerSample;
 
-        public string ChunkId
+        public FormatChunk()
+        {
+        }
+
+        public FormatChunk(FormatChunk format)
+        {
+            this.avgBytesPerSec = format.AvgBytesPerSec;
+            this.bitsPerSample = format.BitsPerSample;
+            this.blockAlign = format.BlockAlign;
+            this.channels = format.Channels;
+            this.chunkId = format.ChunkId;
+            this.chunkSize = format.ChunkSize;
+            this.formatTag = format.FormatTag;
+            this.samplesPerSec = format.SamplesPerSec;
+        }
+
+        public uint ChunkId
         {
             get { return chunkId; }
             set { chunkId = value; }

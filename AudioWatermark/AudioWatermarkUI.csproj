@@ -98,6 +98,10 @@
       <Project>{1fddfa65-cf39-49cd-a721-889620fdae15}</Project>
       <Name>AudioWatermarkCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AudioWatermarkLSB\AudioWatermarkLSB.csproj">
+      <Project>{c8b6729a-835f-4710-a689-3756e4352eee}</Project>
+      <Name>AudioWatermarkLSB</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

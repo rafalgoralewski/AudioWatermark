@@ -12,14 +12,22 @@ namespace AudioWatermarkCore.Domain
         private HeaderChunk header;
         private FormatChunk format;
         private FactChunk fact;
-        private List<DataChunk> data;
+        private DataChunk data;
 
         public WAVFile()
         {
             Header = new HeaderChunk();
             Format = new FormatChunk();
             Fact = new FactChunk();
-            Data = new List<DataChunk>();
+            Data = new DataChunk();
+        }
+
+        public WAVFile(WAVFile file)
+        {
+            Header = new HeaderChunk(file.Header);
+            Format = new FormatChunk(file.Format);
+            Fact = new FactChunk(file.Fact);
+            Data = new DataChunk(file.Data);
         }
 
         public HeaderChunk Header
@@ -40,7 +48,7 @@ namespace AudioWatermarkCore.Domain
             set { fact = value; }
         }
 
-        public List<DataChunk> Data
+        public DataChunk Data
         {
             get { return data; }
             set { data = value; }

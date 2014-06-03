@@ -8,26 +8,37 @@ namespace AudioWatermarkCore.Domain.Chunks
 {
     public class HeaderChunk
     {
-        private string chunkId;
-        private uint fileLength;
-        private string type;
+        private byte[] rawData;
 
-        public string ChunkId
+        public HeaderChunk()
         {
-            get { return chunkId; }
-            set { chunkId = value; }
+            rawData = new byte[12];
         }
 
-        public uint FileLength
+        public HeaderChunk(HeaderChunk header)
         {
-            get { return fileLength; }
-            set { fileLength = value; }
+            header.RawData.CopyTo(this.rawData, 0);
         }
 
-        public string Type
+        public byte[] ChunkId
         {
-            get { return type; }
-            set { type = value; }
+            get { return rawData.Take(4).ToArray(); }
+        }
+
+        public byte[] FileLength
+        {
+            get { return rawData.Skip(4).Take(4).ToArray(); }
+        }
+
+        public byte[] Type
+        {
+            get { return rawData.Skip(8).Take(4).ToArray(); }
+        }
+
+        public byte[] RawData
+        {
+            get { return rawData; }
+            set { rawData = value; }
         }
     }
 }

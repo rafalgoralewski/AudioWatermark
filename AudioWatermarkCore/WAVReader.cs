@@ -21,24 +21,29 @@ namespace AudioWatermarkCore
                 rawData = reader.ReadToEnd();
             }
 
-            // Header
-            result.Header = new HeaderChunk()
+            using (BinaryReader reader = new BinaryReader(File.Open(fileName, FileMode.Open)))
             {
-                ChunkId = rawData.Substring(0, 4), 
-                FileLength = stringLETo32uInt(rawData.Substring(4,4)), 
-                Type = rawData.Substring(8, 4)
-            };
+                result.Header.RawData = reader.ReadBytes(12);
+            }
+
+            // Header
+            //result.Header = new HeaderChunk()
+            //{
+            //    ChunkId = stringLETo32uInt(rawData.Substring(0, 4)), 
+            //    FileLength = stringLETo32uInt(rawData.Substring(4,4)), 
+            //    Type = stringLETo32uInt(rawData.Substring(8, 4))
+            //};
                 
             // Chunks
             int i = 12;
-            while (i < result.Header.FileLength)
+            while (i < result.Header.FileLength.ToInt())
             {
-                string chunkId = rawData.Substring(i, 4);
+                uint chunkId = stringLETo32uInt(rawData.Substring(i, 4));
                 uint chunkSize = stringLETo32uInt(rawData.Substring(i + 4, 4));
                 uint fullChunkSize = chunkSize + 8;
 
-                // Format
-                if (chunkId.Equals("fmt "))
+                // Format "fmt "
+                if (chunkId.Equals(0x20746d66))
                 {
                     result.Format = new FormatChunk()
                     {
@@ -53,8 +58,8 @@ namespace AudioWatermarkCore
                     };
                 }
 
-                // Fact
-                if (chunkId.Equals("fact"))
+                // Fact "fact"
+                if (chunkId.Equals(0x00)) //ignore
                 {
                     result.Fact = new FactChunk()
                     {
@@ -64,15 +69,18 @@ namespace AudioWatermarkCore
                     };
                 }
 
-                // Data
-                if (chunkId.Equals("data"))
+                // SoundData "data"
+                if (chunkId.Equals(0x61746164))
                 {
                     DataChunk data = new DataChunk()
                     {
                         ChunkID = chunkId,
                         ChunkSize = chunkSize,
-                        Data = rawData.Skip(i + 8).Select(c => (int) c).ToList()
+                        SoundData = rawData.Skip(i + 8).Select(c => (byte) c).ToList()
                     };
+
+                    result.Data = data;
+                    break;
                 }
 
                 i += int.Parse(fullChunkSize.ToString());
@@ -80,6 +88,39 @@ namespace AudioWatermarkCore
             
 
             return result;
+        }
+
+        public void SaveFile(WAVFile file, string filename)
+        {
+            using (BinaryWriter stream = new BinaryWriter(File.Open(filename, FileMode.Create)))
+            {
+                stream.Write(file.Header.ChunkId);
+                stream.Write(file.Header.FileLength);
+                stream.Write(file.Header.Type);
+
+                stream.Write(file.Format.ChunkId);
+                stream.Write(file.Format.ChunkSize);
+                stream.Write(file.Format.FormatTag);
+                stream.Write(file.Format.Channels);
+                stream.Write(file.Format.SamplesPerSec);
+                stream.Write(file.Format.AvgBytesPerSec);
+                stream.Write(file.Format.BlockAlign);
+                stream.Write(file.Format.BitsPerSample);
+                
+                //stream.Write(file.Fact.ChunkID);
+                //stream.Write(file.Fact.ChunkSize);
+                //stream.Write(file.Fact.NumSamples);
+
+                stream.Write(file.Data.ChunkID);
+                stream.Write(file.Data.ChunkSize);
+
+                foreach (var sample in file.Data.SoundData)
+                {
+                    stream.Write(sample);
+                }
+
+                stream.Flush();
+            }
         }
 
         private uint stringLETo32uInt(string input)
