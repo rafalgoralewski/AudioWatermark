@@ -8,29 +8,34 @@ namespace AudioWatermarkCore.Domain.Chunks
 {
     public class DataChunk
     {
-        private uint chunkID;
-        private uint chunkSize;
+        private byte[] chunkID;
+        private byte[] chunkSize;
         private List<byte> soundData;
 
         public DataChunk()
         {
+            chunkID = new byte[4];
+            chunkSize = new byte[4];
             soundData = new List<byte>();
         }
 
         public DataChunk(DataChunk data)
         {
-            chunkID = data.ChunkID;
-            chunkSize = data.ChunkSize;
+            chunkID = new byte[4];
+            chunkSize = new byte[4];
+            soundData = new List<byte>();
+            data.ChunkID.CopyTo(this.chunkID, 0);
+            data.ChunkSize.CopyTo(this.chunkSize, 0);
             soundData = new List<byte>(data.SoundData);
         }
 
-        public uint ChunkID
+        public byte[] ChunkID
         {
             get { return chunkID; }
             set { chunkID = value; }
         }
 
-        public uint ChunkSize
+        public byte[] ChunkSize
         {
             get { return chunkSize; }
             set { chunkSize = value; }
