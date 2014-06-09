@@ -41,8 +41,6 @@
   <ItemGroup>
     <Compile Include="ByteArrayHelper.cs" />
     <Compile Include="Domain\Chunks\DataChunk.cs" />
-    <Compile Include="Domain\Chunks\FactChunk.cs" />
-    <Compile Include="Domain\Chunks\FormatChunk.cs" />
     <Compile Include="Domain\Chunks\HeaderChunk.cs" />
     <Compile Include="Domain\WAVFile.cs" />
     <Compile Include="StringDecoder.cs" />

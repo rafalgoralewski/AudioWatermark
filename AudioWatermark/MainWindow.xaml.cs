@@ -1,5 +1,6 @@
 ﻿using AudioWatermarkCore;
 using AudioWatermarkCore.Domain;
+using AudioWatermarkEcho;
 using AudioWatermarkLSB;
 using Microsoft.Win32;
 using System;
@@ -44,7 +45,7 @@ namespace AudioWatermark
             MessageBox.Show("Plik wczytany");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void BtnLSB_Click(object sender, RoutedEventArgs e)
         {
             if (originalFile == null)
             {
@@ -62,7 +63,7 @@ namespace AudioWatermark
 
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.ShowDialog();
@@ -70,6 +71,30 @@ namespace AudioWatermark
             WAVReader reader = new WAVReader();
             string filename = sfd.SafeFileName;
             reader.SaveFile(encodedFile, filename);
+        }
+
+        private void BtnEcho_Click(object sender, RoutedEventArgs e)
+        {
+            if (originalFile == null)
+            {
+                MessageBox.Show("Wczytaj plik");
+                return;
+            }
+
+            if (tbxMessage.Text.Count() < 3)
+            {
+                MessageBox.Show("Wpisz wiadomość");
+                return;
+            }
+
+            EchoCoder coder = new EchoCoder();
+
+            encodedFile = coder.WriteMessageToFile(originalFile, tbxMessage.Text);
+
+
+
+            /////////////
+            string decodedMessage = coder.Decode(encodedFile, originalFile);
         }
     }
 }

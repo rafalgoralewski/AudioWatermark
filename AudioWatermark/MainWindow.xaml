@@ -17,9 +17,13 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="Wiadomość: " />
                 <TextBox x:Name="tbxMessage" Width="200"/>
-                <Button Click="Button_Click" Content="Zakoduj" Width="100"/>
-                <Button Click="Button_Click_1" Content="Test" Width="100"/>
+                <StackPanel>
+                    <Button Click="BtnLSB_Click" Content="LSB" Width="100"/>
+                    <Button Click="BtnEcho_Click" Content="Echo" Width="100"/>
+                    <Button Click="BtnSave_Click" Content="Zapisz" Width="100"/>
+                </StackPanel>
             </StackPanel>
+            
         </Grid>
     </Grid>
 </Window>

@@ -9,20 +9,20 @@ namespace AudioWatermarkCore.Domain.Chunks
     public class HeaderChunk
     {
         private byte[] rawData;
-        private byte[] quick;
+        private List<byte> others;
 
         public HeaderChunk()
         {
-            rawData = new byte[12];
-            quick = new byte[106];
+            rawData = new byte[38];
+            others = new List<byte>();
         }
 
         public HeaderChunk(HeaderChunk header)
         {
-            rawData = new byte[12];
-            quick = new byte[106];
+            rawData = new byte[38];
+            others = new List<byte>();
             header.RawData.CopyTo(this.rawData, 0);
-            header.Quick.CopyTo(this.quick, 0);
+            this.others = header.others.Select(x => x).ToList();
         }
 
         public byte[] ChunkId
@@ -46,10 +46,25 @@ namespace AudioWatermarkCore.Domain.Chunks
             set { rawData = value; }
         }
 
-        public byte[] Quick
+        public List<byte> Others
         {
-            get { return quick; }
-            set { quick = value; }
+            get { return others; }
+            set { others = value; }
+        }
+
+        public byte[] Channels
+        {
+            get { return rawData.Skip(22).Take(2).ToArray(); }
+        }
+
+        public byte[] SampleRate
+        {
+            get { return rawData.Skip(24).Take(4).ToArray(); }
+        }
+
+        public byte[] BPS
+        {
+            get { return rawData.Skip(34).Take(2).ToArray(); }
         }
     }
 }
